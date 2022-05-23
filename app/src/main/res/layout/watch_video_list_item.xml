@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayoutId"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/imageShowId"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="fitXY"
+             />
+
+        <ImageView
+            android:id="@+id/imagePlayId"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:rotation="180"
+            android:src="@drawable/backicn" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:weightSum="8"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/videoNameId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Idiski TV"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <TextView
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="Download"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:id="@+id/imageDownloadId"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="right|bottom"
+            android:src="@drawable/download" />
+
+    </LinearLayout>
+
+</LinearLayout>
