@@ -4,6 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/new project/Viewall/app/src/main/res/layout/activity_downloan.xml" value="0.19537037037037036" />
+        <entry key="..\:/new project/Viewall/app/src/main/res/layout/activity_video_show.xml" value="0.19555143651529194" />
+        <entry key="..\:/new project/Viewall/app/src/main/res/layout/activity_video_show_offline.xml" value="0.19537037037037036" />
+        <entry key="..\:/new project/Viewall/app/src/main/res/layout/app_bar_home.xml" value="0.19555143651529194" />
+        <entry key="..\:/new project/Viewall/app/src/main/res/layout/content_home.xml" value="0.19537037037037036" />
         <entry key="..\:/new project/Viewall/app/src/main/res/layout/offline_list_item.xml" value="0.19537037037037036" />
         <entry key="..\:/new project/Viewall/app/src/main/res/layout/offline_list_item_inner.xml" value="0.23125" />
       </map>

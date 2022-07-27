@@ -26,7 +26,8 @@ public class DownloanActivity extends AppCompatActivity {
     RecyclerView downloadRec;
     OfflineVideoAdapter offlineVideoAdapter;
 
-    HashMap<String, VideoModel> myMap;
+    List<String> listHeader;
+    HashMap<String, List<String>> listChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,15 @@ public class DownloanActivity extends AppCompatActivity {
         offLineAddData = databaseHandler.getAllAdVideoData();
 
         //Call get data from the tablebanner
-        offlineBannerData = databaseHandler.getBannerData();
+//        offlineBannerData = databaseHandler.getBannerData();
 
         downloadRec = findViewById(R.id.downloadRec);
+
+        databaseHandler.getCatData();
+
+        listHeader = new ArrayList<String>();
+        listChild = new HashMap<String, List<String>>();
+
 
         /*offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData);*/
         offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData,

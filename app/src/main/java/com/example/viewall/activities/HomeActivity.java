@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
@@ -14,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MenuItem;
@@ -46,15 +48,19 @@ import com.example.viewall.utils.SharePrefrancClass;
 import com.google.android.material.navigation.NavigationView;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderView;
+import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
 import com.tonyodev.fetch2.FetchConfiguration;
+import com.tonyodev.fetch2.FetchListener;
 import com.tonyodev.fetch2.NetworkType;
 import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
+import com.tonyodev.fetch2core.DownloadBlock;
 import com.tonyodev.fetch2core.Func;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.PopupMenu;
@@ -108,12 +114,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     DatabaseHandler databaseHandler;
 
-
-
     private static final int REQ_CODE = 1;
 
     //Creating reference variable of fetch
     private Fetch fetch;
+
+    String bannerNameForDownload, bannerUrlForDownload;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -142,7 +148,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //Configuring fetch
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(3)
+                .setDownloadConcurrentLimit(5)
                 .build();
 
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
@@ -217,6 +223,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         popularVideoLayoutId = findViewById(R.id.popularVideoLayoutId);
         icn_hamburger = findViewById(R.id.icn_hamburger);
         img1 = findViewById(R.id.img1);
+
 
         /*int popularImages[] = {R.drawable.img1,
                 R.drawable.img2,
@@ -334,7 +341,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //        setSupportActionBar(binding.appBarHome.toolbar);
 
 
-
         //Calling index api.
         callIndexApi();
 
@@ -375,14 +381,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     //Code for hit api in for loop
                     String bannerUrl = "";
                     String tempStr = "";
-                    for (int i = 0; i < bannerList.size(); i++) {
+                    for (int i = 0; i < bannerList.size()/*2*/; i++) {
                         tempStr = bannerList.get(i).getImageUrl().replace("http://dev.view4all.tv/content/", "");
                         /*bannerUrl = bannerUrl + ", " + tempStr;*/
                         //Calling index1 api
                         callIndex1Api(tempStr);
 
+                        bannerNameForDownload = tempStr;
+                        bannerUrlForDownload = bannerList.get(i).getImageUrl();
+
                         //Call the download function for download the banner image
                         callBannerDownload(tempStr, bannerList.get(i).getImageUrl());
+
+                        //Below code for create new folder in the download directory
+                        /*String folder_main = "AddBanners";
+                        File f = new File(Environment.getExternalStorageDirectory(), folder_main);
+                        if (!f.exists()) {
+                            f.mkdirs();
+                        }
+                        String fileToDownload = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + folder_main + "/" + tempStr  *//*+ ".mp4"*//* *//*strVideoName*//*;
+                        //Calling method for download banner list image
+                        callBannerDownloadNew(new Request(bannerList.get(i).getImageUrl(),
+                                        fileToDownload),
+                                tempStr, bannerList.get(i).getImageUrl());*/
+
                     }
 
 
@@ -468,6 +490,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<OfflineDataResponse> call, Response<OfflineDataResponse> response) {
                 if (response.body() != null) {
                     Log.d("offlineapires", response.body().getMessage());
+                    /*Toast.makeText(HomeActivity.this, "Success", Toast.LENGTH_SHORT).show();*/
                     databaseHandler.removeTableData();
                 }
             }
@@ -476,6 +499,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onFailure(Call<OfflineDataResponse> call, Throwable t) {
                 progressDialog.dismiss();
                 Log.d("offlineapifail", t.getMessage());
+                /*Toast.makeText(HomeActivity.this, "Fail "+ t.getMessage(), Toast.LENGTH_SHORT).show();*/
+                databaseHandler.removeTableData();
             }
         });
 
@@ -624,6 +649,76 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         request.setNetworkType(NetworkType.ALL);
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
 
+        fetch.addListener(new FetchListener() {
+            @Override
+            public void onAdded(@NonNull Download download) {
+                //This method is called first time when download the file
+                Log.d("onAdded:", "OnAdded");
+
+            }
+
+            @Override
+            public void onQueued(@NonNull Download download, boolean b) {
+
+            }
+
+            @Override
+            public void onWaitingNetwork(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onCompleted(@NonNull Download download) {
+                //This method called every time when we download the file
+                fetch.removeListener(this);
+            }
+
+            @Override
+            public void onError(@NonNull Download download, @NonNull Error error, @Nullable Throwable throwable) {
+
+            }
+
+            @Override
+            public void onDownloadBlockUpdated(@NonNull Download download, @NonNull DownloadBlock downloadBlock, int i) {
+
+            }
+
+            @Override
+            public void onStarted(@NonNull Download download, @NonNull List<? extends DownloadBlock> list, int i) {
+
+            }
+
+            @Override
+            public void onProgress(@NonNull Download download, long l, long l1) {
+
+            }
+
+            @Override
+            public void onPaused(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onResumed(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onRemoved(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onDeleted(@NonNull Download download) {
+
+            }
+        });
+
         fetch.enqueue(request, new Func<Request>() {
             @Override
             public void call(@NonNull Request result) {
@@ -633,13 +728,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         strVideoTime));*/
                 databaseHandler.addBannerData(new TableBannerModel(bannerName,
                         fileToDownload));
+                //Below code for check duplicate entry in the bannertable
+                /*databaseHandler.checkDuplicate("tablebanner", bannerName, fileToDownload);*/
+                Log.d("onResult:", "OnResult");
             }
         }, new Func<Error>() {
             @Override
             public void call(@NonNull Error result) {
                 /*Toast.makeText(HomeActivity.this, result.toString(), Toast.LENGTH_SHORT).show();*/
+                Log.d("onError:", "OnError");
             }
         });
+
+
     }
 
     @Override
@@ -649,4 +750,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         SharePrefrancClass.getInstance(HomeActivity.this).savePref("fromActivity",
                 "http://dev.view4all.tv/index");
     }
+
 }

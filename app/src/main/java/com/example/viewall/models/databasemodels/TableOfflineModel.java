@@ -15,6 +15,23 @@ public class TableOfflineModel {
     String banneroffline;
     String bannername;
     String referror;
+    String page_name;
+
+    public TableOfflineModel(String adStart, String videoStart, String videoId, String contactId, String datetime, String videoend, String adend, String adname, String marker, String banneroffline, String bannername, String referror, String page_name) {
+        this.adStart = adStart;
+        this.videoStart = videoStart;
+        this.videoId = videoId;
+        this.contactId = contactId;
+        this.datetime = datetime;
+        this.videoend = videoend;
+        this.adend = adend;
+        this.adname = adname;
+        this.marker = marker;
+        this.banneroffline = banneroffline;
+        this.bannername = bannername;
+        this.referror = referror;
+        this.page_name = page_name;
+    }
 
     public TableOfflineModel(String adStart, String videoStart, String videoId, String contactId, String datetime, String videoend, String adend, String adname, String marker, String banneroffline, String bannername, String referror) {
         this.adStart = adStart;
@@ -114,6 +131,14 @@ public class TableOfflineModel {
         this._id = _id;
         this.adStart = adStart;
         this.videoStart = videoStart;
+    }
+
+    public String getPage_name() {
+        return page_name;
+    }
+
+    public void setPage_name(String page_name) {
+        this.page_name = page_name;
     }
 
     public String getReferror() {

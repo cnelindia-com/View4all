@@ -51,10 +51,24 @@ public class OfflineVideoAdapter extends RecyclerView.Adapter<OfflineVideoAdapte
         VideoModel videoModel = list.get(position);
         AddVideoModel adVideoModel = adList.get(position);
 
+        if (position == 0) {
+            holder.catNameTxtId.setVisibility(View.VISIBLE);
+            holder.catNameTxtId.setText(videoModel.getCatname());
+        }
+
+        if (position > 0) {
+            if (videoModel.getCatname().equals(list.get(position - 1).getCatname())) {
+
+            } else {
+                holder.catNameTxtId.setVisibility(View.VISIBLE);
+                holder.catNameTxtId.setText(videoModel.getCatname());
+            }
+        }
+
 
 
         holder.videoNameId.setText(videoModel.getName());
-        holder.catNameTxtId.setText(videoModel.getCatname());
+
 
         holder.rootLayoutId.setOnClickListener(new View.OnClickListener() {
             @Override

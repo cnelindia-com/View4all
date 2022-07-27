@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.MenuItem;
@@ -115,14 +116,15 @@ public class VideoShowActivityOffline extends AppCompatActivity {
         offlineBannerData = databaseHandler.getBannerData();
 
         //Code for insert banner data into the table
-        for (int i=0; i<offlineBannerData.size(); i++) {
+        for (int i = 0; i < offlineBannerData.size(); i++) {
             databaseHandler.addOfflineData(new TableOfflineModel("",
                     "",
                     "",
                     SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
                             .getPref("phone_number"), "", "",
                     "", "", "", "banner",
-                    offlineBannerData.get(i).getName(), "Offline Downloads"));
+                    offlineBannerData.get(i).getName(), "Offline Downloads",
+                    ""));
         }
 
         /*Toast.makeText(VideoShowActivityOffline.this, intent.getStringExtra("videoNameOffline")
@@ -159,16 +161,16 @@ public class VideoShowActivityOffline extends AppCompatActivity {
             //Calling watch1 api when ad video start
             //Code for get the current data and time
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String date = sdf.format(new Date());
             //Advt start update table offline
             databaseHandler.addOfflineData(new TableOfflineModel("ad_play",
                     "",
-                    "",
+                    strVideoIdOff,
                     SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
                             .getPref("phone_number"), date, "",
                     "", strAdVideoNameOff, "", "", "",
-                    "Offline Downloads"));
+                    "Offline Downloads", ""));
 
             //Calling watch2 api when ad video start
 
@@ -180,7 +182,7 @@ public class VideoShowActivityOffline extends AppCompatActivity {
                     //Calling watch3 api, when ad video end
                     //Code for get the current data and time
                     @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String date = sdf.format(new Date());
                     databaseHandler.addOfflineData(new TableOfflineModel("",
                             "",
@@ -188,7 +190,16 @@ public class VideoShowActivityOffline extends AppCompatActivity {
                             SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
                                     .getPref("phone_number"), date, "",
                             "ad_end", strAdVideoNameOff, "", "", "",
-                            "Offline Downloads"));
+                            "Offline Downloads", ""));
+
+                    //Code for send the pagename watch
+                    databaseHandler.addOfflineData(new TableOfflineModel("",
+                            "",
+                            strVideoIdOff,
+                            SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
+                                    .getPref("phone_number"), date, "",
+                            "", strAdVideoNameOff, "", "", "",
+                            "Offline Downloads", "watch"));
 
 
                     Uri video = Uri.parse(url);
@@ -199,14 +210,87 @@ public class VideoShowActivityOffline extends AppCompatActivity {
                     videoView.setPlayPauseListener(new CustomVideoView.PlayPauseListener() {
                         @Override
                         public void onPlay() {
-                            /*Toast.makeText(VideoShowActivity.this, "OnPlay Called", Toast.LENGTH_SHORT).show();*/
-                            databaseHandler.addOfflineData(new TableOfflineModel("",
-                                    "video_start",
-                                    strVideoIdOff,
-                                    SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
-                                            .getPref("phone_number"), date, "",
-                                    "", "", "",
-                                    "", "", "Offline Downloads"));
+
+                            if (videoView.isPlaying()) {
+
+                                //Code for get the current data and time
+                                @SuppressLint("SimpleDateFormat")
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String date = sdf.format(new Date());
+
+                                /*Toast.makeText(VideoShowActivity.this, "OnPlay Called", Toast.LENGTH_SHORT).show();*/
+                                databaseHandler.addOfflineData(new TableOfflineModel("",
+                                        "video_start",
+                                        strVideoIdOff,
+                                        SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
+                                                .getPref("phone_number"), date, "",
+                                        "", "", "",
+                                        "", "", "Offline Downloads",
+                                        ""));
+
+
+                                //Code for convert the hhmmss in seconds
+                                String timeInSeconds = strVideoTimeOff; //mm:ss
+                                String[] units = timeInSeconds.split(":"); //will break the string up into an array
+                                int hours = Integer.parseInt(units[0]);
+                                int minutes = Integer.parseInt(units[1]); //first element
+                                int seconds = Integer.parseInt(units[2]); //second element
+                                int duration = 3600 * hours + 60 * minutes + seconds; //add up our values
+                                int val = 10;
+
+                                //Below code for start timer
+                                new CountDownTimer(duration * 1000L, /*1000 * 40*/ 60000) {
+
+                                    @Override
+                                    public void onTick(long l) {
+                                        /*Toast.makeText(VideoShowActivityOffline.this, "onTick", Toast.LENGTH_SHORT).show();*/
+
+                                        //Code for get the current data and time
+                                        @SuppressLint("SimpleDateFormat")
+                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        String date = sdf.format(new Date());
+
+                                        if (videoView.isPlaying()) {
+                                            //Calling the marker api, after one minutes
+                                            /*callWatchMarker();*/
+
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                                if (duration - 5 < l / 1000) {
+
+                                                } else {
+                                                    //Calling the marker api, after one minutes
+                                                    databaseHandler.addOfflineData(new TableOfflineModel("",
+                                                            "",
+                                                            strVideoIdOff,
+                                                            SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
+                                                                    .getPref("phone_number"), date, "",
+                                                            "", "",
+                                                            "marker", "", "",
+                                                            "Offline Downloads", ""));
+                                                }
+                                            } else {
+                                                //Calling the marker api, after one minutes
+                                                databaseHandler.addOfflineData(new TableOfflineModel("",
+                                                        "",
+                                                        strVideoIdOff,
+                                                        SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
+                                                                .getPref("phone_number"), date, "",
+                                                        "", "",
+                                                        "marker", "", "",
+                                                        "Offline Downloads", ""));
+                                            }
+
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        /*Toast.makeText(VideoShowActivity.this, "onFinish", Toast.LENGTH_SHORT).show();*/
+                                    }
+                                }.start();
+
+                            }
                         }
 
                         @Override
@@ -223,57 +307,26 @@ public class VideoShowActivityOffline extends AppCompatActivity {
 
                     //Calling watch4 api, when video start
 
-                    //Code for convert the hhmmss in seconds
-                    String timeInSeconds = strVideoTimeOff; //mm:ss
-                    String[] units = timeInSeconds.split(":"); //will break the string up into an array
-                    int hours = Integer.parseInt(units[0]);
-                    int minutes = Integer.parseInt(units[1]); //first element
-                    int seconds = Integer.parseInt(units[2]); //second element
-                    int duration = 3600 * hours + 60 * minutes + seconds; //add up our values
-                    int val = 10;
 
-                    //Below code for start timer
-                    new CountDownTimer(duration * 1000L, 1000 * 60) {
-
-                        @Override
-                        public void onTick(long l) {
-                            /*Toast.makeText(VideoShowActivity.this, "onTick", Toast.LENGTH_SHORT).show();*/
-
-                            if (videoView.isPlaying()){
-                                //Calling the marker api, after one minutes
-                                /*callWatchMarker();*/
-                                databaseHandler.addOfflineData(new TableOfflineModel("",
-                                        "",
-                                        strVideoIdOff,
-                                        SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
-                                                .getPref("phone_number"), date, "",
-                                        "", "",
-                                        "marker", "", "",
-                                        "Offline Downloads"));
-                            }
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            /*Toast.makeText(VideoShowActivity.this, "onFinish", Toast.LENGTH_SHORT).show();*/
-                        }
-                    }.start();
-
-                    databaseHandler.addOfflineData(new TableOfflineModel("",
+                    //Video start entry in database
+                    /*databaseHandler.addOfflineData(new TableOfflineModel("",
                             "video_start",
                             strVideoIdOff,
                             SharePrefrancClass.getInstance(VideoShowActivityOffline.this)
                                     .getPref("phone_number"), date, "",
                             "", "", "", "", "",
-                            "Offline Downloads"));
-
-
+                            "Offline Downloads"));*/
 
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mediaPlayer) {
                             /*Toast.makeText(VideoShowActivity.this, "Finished", Toast.LENGTH_SHORT).show();*/
+
+                            //Code for get the current data and time
+                            @SuppressLint("SimpleDateFormat")
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String date = sdf.format(new Date());
 
                             //Calling watch5 api, when video end
                             databaseHandler.addOfflineData(new TableOfflineModel("",
@@ -283,16 +336,16 @@ public class VideoShowActivityOffline extends AppCompatActivity {
                                             .getPref("phone_number"), date, "video_end",
                                     "", "", "",
                                     "", "",
-                                    "Offline Downloads"));
+                                    "Offline Downloads", ""));
 
                             //Trying to saving only date in database
                             /*databaseHandler.addOfflineData(new TableOfflineModel("", "",
                                     "", "", date, "end"));*/
 
                             //Code for get the current data and time
-                            @SuppressLint("SimpleDateFormat")
+                            /*@SuppressLint("SimpleDateFormat")
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
-                            String date = sdf.format(new Date());
+                            String date = sdf.format(new Date());*/
 
                             //Saving offline data information here
                             /*databaseHandler.addOfflineData(new TableOfflineModel("ad_play",

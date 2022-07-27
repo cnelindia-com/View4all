@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -92,7 +93,7 @@ public class VideoShowActivity extends AppCompatActivity {
     private Fetch fetch;
 
     String strVideoUrlForDownload;
-    String strVideoName, strAddVideoNameUrl, strAddVideoNameToStore, strAddVideoId, strVideoTime;
+    String strVideoName, strAddVideoNameUrl, strAddVideoNameToStore, strAddVideoId, strVideoTime, strCategoryId;
 
     String strDbVideoName;
     String strPhoneNumber;
@@ -193,7 +194,7 @@ public class VideoShowActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(VideoShowActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -425,7 +426,7 @@ public class VideoShowActivity extends AppCompatActivity {
     }
 
     private void callWatchMarker() {
-        Call<WatchMarkerResponse> call = RetrofitClient.getInstance().getMyApi().watchMarker("123",
+        Call<WatchMarkerResponse> call = RetrofitClient.getInstance().getMyApi().watchMarker("",
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("phone_number"),
                 strVideoId,
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("fromActivity"));
@@ -446,7 +447,7 @@ public class VideoShowActivity extends AppCompatActivity {
     }
 
     private void callWatch5Api() {
-        Call<Watch5Response> call = RetrofitClient.getInstance().getMyApi().watch5("123",
+        Call<Watch5Response> call = RetrofitClient.getInstance().getMyApi().watch5("",
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("phone_number"),
                 strVideoId,
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("fromActivity"));
@@ -469,7 +470,7 @@ public class VideoShowActivity extends AppCompatActivity {
     private void callWatch4Api() {
         Call<Watch4Response> call = RetrofitClient.getInstance().getMyApi().watch4(/*strAddVideoId*/
                 strChannelName,
-                "123",
+                "",
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("phone_number"),
                 strVideoId,
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("fromActivity"));
@@ -493,7 +494,7 @@ public class VideoShowActivity extends AppCompatActivity {
     private void callWatch3Api() {
         Call<Watch3Response> call = RetrofitClient.getInstance().getMyApi().watch3(/*strAddVideoId*/
                 strAddVideoNameToStore,
-                "123",
+                "",
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("phone_number"),
                 strVideoId,
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("fromActivity"));
@@ -519,7 +520,7 @@ public class VideoShowActivity extends AppCompatActivity {
                 strAddVideoNameToStore,
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("phone_number"),
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("catIdFromHome"),
-                "123",
+                "",
                 SharePrefrancClass.getInstance(VideoShowActivity.this).getPref("fromActivity"));
 
         call.enqueue(new Callback<Watch2Response>() {
@@ -573,7 +574,7 @@ public class VideoShowActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     //Call api for save watched video
                     callSaveWatchVideoApi();
-                    Toast.makeText(VideoShowActivity.this, response.body().getData().get(0).getUrlVideo(), Toast.LENGTH_SHORT).show();
+                    /*Toast.makeText(VideoShowActivity.this, response.body().getData().get(0).getUrlVideo(), Toast.LENGTH_SHORT).show();*/
                     Log.d("dataValue", response.body().getData().get(0).getUrlVideo());
 
                     txtVideoName.setText(response.body().getData().get(0).getDescription().getName());
@@ -585,6 +586,9 @@ public class VideoShowActivity extends AppCompatActivity {
 
                     //Call video api method
                     /*callVideoApi();*/
+
+                    //Code for get category id
+                    strCategoryId = response.body().getData().get(0).getCategoryId();
 
                     strVideoName = response.body().getData().get(0).getUrlVideo()
                             .replace("http://dev.view4all.tv/content/", "");
@@ -718,7 +722,56 @@ public class VideoShowActivity extends AppCompatActivity {
                     videoView.setPlayPauseListener(new CustomVideoView.PlayPauseListener() {
                         @Override
                         public void onPlay() {
-                            /*Toast.makeText(VideoShowActivity.this, "OnPlay Called", Toast.LENGTH_SHORT).show();*/
+                            if (videoView.isPlaying()) {
+                                /*Toast.makeText(VideoShowActivity.this, "IN IF isPlaying", Toast.LENGTH_SHORT).show();*/
+                                //Calling watch4 api, when video start
+                                callWatch4Api();
+
+                                //Code for convert the hhmmss in seconds
+                                String timeInSeconds = timeFromApi; //mm:ss
+                                String[] units = timeInSeconds.split(":"); //will break the string up into an array
+                                int hours = Integer.parseInt(units[0]);
+                                int minutes = Integer.parseInt(units[1]); //first element
+                                int seconds = Integer.parseInt(units[2]); //second element
+                                int duration = 3600 * hours + 60 * minutes + seconds; //add up our values
+                                int val = 10;
+
+
+                                //Below code for start timer
+                                new CountDownTimer(duration * 1000L, 1000 * 60) {
+
+                                    @Override
+                                    public void onTick(long l) {
+                                        /*Toast.makeText(VideoShowActivity.this, "onTick", Toast.LENGTH_SHORT).show();*/
+
+
+                                        if (videoView.isPlaying()) {
+
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                                if (duration - 5 < l / 1000) {
+
+                                                } else {
+                                                    //Calling the marker api, after one minutes
+                                                    callWatchMarker();
+                                                }
+                                            } else {
+                                                //Calling the marker api, after one minutes
+                                                callWatchMarker();
+                                            }
+
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        /*Toast.makeText(VideoShowActivity.this, "onFinish", Toast.LENGTH_SHORT).show();*/
+                                    }
+                                }.start();
+                            }
+
+
                         }
 
                         @Override
@@ -728,36 +781,7 @@ public class VideoShowActivity extends AppCompatActivity {
                     });
 
                     //Calling watch4 api, when video start
-                    callWatch4Api();
-
-                    //Code for convert the hhmmss in seconds
-                    String timeInSeconds = timeFromApi; //mm:ss
-                    String[] units = timeInSeconds.split(":"); //will break the string up into an array
-                    int hours = Integer.parseInt(units[0]);
-                    int minutes = Integer.parseInt(units[1]); //first element
-                    int seconds = Integer.parseInt(units[2]); //second element
-                    int duration = 3600 * hours + 60 * minutes + seconds; //add up our values
-                    int val = 10;
-
-
-                    //Below code for start timer
-                    new CountDownTimer(duration * 1000L, 1000 * 60) {
-
-                        @Override
-                        public void onTick(long l) {
-                            /*Toast.makeText(VideoShowActivity.this, "onTick", Toast.LENGTH_SHORT).show();*/
-
-                            if (videoView.isPlaying()){
-                                //Calling the marker api, after one minutes
-                                callWatchMarker();
-                            }
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            /*Toast.makeText(VideoShowActivity.this, "onFinish", Toast.LENGTH_SHORT).show();*/
-                        }
-                    }.start();
+                    /*callWatch4Api();*/
 
 
                     videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -876,7 +900,7 @@ public class VideoShowActivity extends AppCompatActivity {
         @Override
         public void onProgress(@NonNull Download download, long l, long l1) {
             //This method show the progress of download and time
-            Toast.makeText(VideoShowActivity.this, String.valueOf(l), Toast.LENGTH_SHORT).show();
+            Toast.makeText(VideoShowActivity.this, String.valueOf(l / 1000) + " Seconds Remaining", Toast.LENGTH_SHORT).show();
         }
 
         @Override

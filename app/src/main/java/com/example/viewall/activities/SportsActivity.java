@@ -290,7 +290,8 @@ public class SportsActivity extends AppCompatActivity {
     private void callChannel(String channelId) {
         Call<ChannelResponse> call = RetrofitClient.getInstance().getMyApi().channelRes(
                 /*channelId*/ SharePrefrancClass.getInstance(SportsActivity.this).getPref("catIdFromHome"),
-                SharePrefrancClass.getInstance(SportsActivity.this).getPref("phone_number"));
+                SharePrefrancClass.getInstance(SportsActivity.this).getPref("phone_number"),
+                SharePrefrancClass.getInstance(SportsActivity.this).getPref("fromActivity"));
 
         call.enqueue(new Callback<ChannelResponse>() {
             @Override

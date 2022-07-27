@@ -68,14 +68,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "marker" + " TEXT,"
                 + "banneroffline" + " TEXT,"
                 + "bannername" + " TEXT,"
-                + "referror" + " TEXT"
+                + "referror" + " TEXT,"
+                + "page_name" + " TEXT"
                 + ")";
 
         String CREATE_BANNER_TABLE = "CREATE TABLE " + TABLE_BANNER +
                 "("
                 + "id" + " INTEGER PRIMARY KEY,"
-                + "bannerpath" + " TEXT,"
-                + "bannername" + " TEXT"
+                + "bannerpath" + " TEXT UNIQUE,"
+                + "bannername" + " TEXT UNIQUE"
                 + ")";
 
         String CREATE_BANNER_TABLE_OFFLINE = "CREATE TABLE " + TABLE_BANNER_OFFLINE +
@@ -86,11 +87,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "bannername" + " TEXT"
                 + ")";
 
+        //Query for get the channel name
+        String answer = "SELECT DISTINCT " + "catname" + " FROM " + TABLE_VIDEOS;
+
         sqLiteDatabase.execSQL(CREATE_VIDEOS_TABLE);
         sqLiteDatabase.execSQL(CREATE_VIDEOS_ADD_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_OFFLINE);
         sqLiteDatabase.execSQL(CREATE_BANNER_TABLE);
         sqLiteDatabase.execSQL(CREATE_BANNER_TABLE_OFFLINE);
+
+        //Execute query for get the channel name
+        sqLiteDatabase.execSQL(answer);
     }
 
     @Override
@@ -138,6 +145,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("banneroffline", tableOfflineModel.getBanneroffline());
         values.put("bannername", tableOfflineModel.getBannername());
         values.put("referror", tableOfflineModel.getReferror());
+        values.put("page_name", tableOfflineModel.getPage_name());
 
 
         //Inserting Row
@@ -248,6 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 tableOfflineModel.setBanneroffline(cursor.getString(10));
                 tableOfflineModel.setBannername(cursor.getString(11));
                 tableOfflineModel.setReferror(cursor.getString(12));
+                tableOfflineModel.setPage_name(cursor.getString(13));
 
                 //Adding model to list
                 offlineModelList.add(tableOfflineModel);
@@ -301,11 +310,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return tableBannerList;
     }
 
+    //Code for get the cat name list
+    public /*List<String>*/ void getCatData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_VIDEOS, new String[] { KEY_ID,
+                        KEY_NAME }, KEY_ID + "=?",
+                new String[] { String.valueOf(KEY_ID) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        /*Contact contact = new Contact(Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1), cursor.getString(2));*/
+
+        /*String qury = "SELECT * FROM "+  TABLE_VIDEOS +"GROUP" +"BY " + "catname";*/
+        String answer = "SELECT DISTINCT " + "catname" + " FROM " + TABLE_VIDEOS;
+
+
+
+    }
+
     //Code for get the list of videos url and name
     public List<VideoModel> getAllVideoData(){
         List<VideoModel> videosData = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM " + TABLE_VIDEOS;
+        /*String selectQuery = "SELECT * FROM " + TABLE_VIDEOS + " OrderBy" + "catname" + "ASC ";*/
+        String selectQuery = "SELECT * FROM " + TABLE_VIDEOS + " ORDER " +  "BY " + "catname " + "ASC";
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -332,6 +363,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("delete from " + TABLE_OFFLINE);
+    }
+
+    //Method for check duplicate value in the table
+    public boolean checkDuplicate(String TableName,String strBannerPath, String strBannerName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String Query = "SELECT * FROM " +TABLE_BANNER+ " WHERE " + "bannerpath" + "=" + strBannerPath+ "," + "bannername" + "=" + strBannerName;
+        Cursor cursor = db.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
     }
 
     // code to get the single video url

@@ -97,7 +97,8 @@ public class HomeCategoryAdapter extends RecyclerView.Adapter<HomeCategoryAdapte
 
     private void callChannel(String channelId) {
         Call<ChannelResponse> call = RetrofitClient.getInstance().getMyApi().channelRes(channelId,
-                SharePrefrancClass.getInstance(context).getPref("phone_number"));
+                SharePrefrancClass.getInstance(context).getPref("phone_number"),
+                SharePrefrancClass.getInstance(context).getPref("fromActivity"));
 
         call.enqueue(new Callback<ChannelResponse>() {
             @Override

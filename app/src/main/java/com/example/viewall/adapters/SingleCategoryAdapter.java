@@ -110,7 +110,7 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
         holder.imageDownloadId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "VIDEO URL : " + dataItem.getUrlVideo(), Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(context, "VIDEO URL : " + dataItem.getUrlVideo(), Toast.LENGTH_SHORT).show();*/
                 strDbVideoName = dataItem.getDescription().getName();
                 strVideoId = dataItem.getId();
                 strVideoTime = dataItem.getTime();
@@ -270,7 +270,7 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
         @Override
         public void onProgress(@NonNull Download download, long l, long l1) {
             //This method show the progress of download and time
-            Toast.makeText(context, String.valueOf(l), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, String.valueOf(l/1000) + " Seconds Remaining", Toast.LENGTH_SHORT).show();
         }
 
         @Override

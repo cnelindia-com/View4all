@@ -229,11 +229,12 @@ public interface ApiInterface {
     @NonNull
     @POST("api.php?action=channel")
     Call<ChannelResponse> channelRes(@Query("channel_type") String channel_type,
-                                     @Query("contact_id") String contact_id);
+                                     @Query("contact_id") String contact_id,
+                                     @Query("referror") String referror);
 
     //http://dev.view4all.tv/API/api.php?action=offline_watch_data
     @Multipart
-    @POST("api.php?action=offline_watch_data")
+    @POST("api.php?action=offline_watch_data&time=43")
     Call<OfflineDataResponse> offlineWatch(@Part("offline_data[]") List<TableOfflineModel> contact_list
                                            /*@Query("offline_data") String offline_data*/);
 
