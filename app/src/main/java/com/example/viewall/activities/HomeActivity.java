@@ -128,6 +128,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_home);
 
 //        Toast.makeText(HomeActivity.this, SharePrefrancClass.getInstance(HomeActivity.this).getPref("baseurl"), Toast.LENGTH_SHORT).show();
+        //This is the latest code 08/08/2022
 
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
