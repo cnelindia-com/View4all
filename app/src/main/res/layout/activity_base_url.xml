@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="10dp"
                 android:hint="Enter Base URL here"
-                android:text="http://dev.view4all.tv/API/"
+                android:text="http://appdev.view4all.tv/API/"
                 android:singleLine="true"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>

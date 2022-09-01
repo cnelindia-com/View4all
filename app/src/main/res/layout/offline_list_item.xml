@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="5dp"
     android:id="@+id/rootLayoutId"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/imgVid"
         android:layout_width="80dp"
         android:layout_height="70dp"
         android:scaleType="fitXY"
-        android:src="@drawable/mainlogo" />
+        android:src="@drawable/mainlogo"
+        android:visibility="gone" />
+
     <TextView
-        android:visibility="gone"
         android:id="@+id/catNameTxtId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Cat name"
         android:textColor="@color/Red"
-        android:textSize="18dp" />
-    <TextView
-        android:visibility="visible"
-        android:id="@+id/videoNameId"
+        android:textSize="18dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="10dp"
-        android:text="video Name Sample"
-        android:textColor="@color/black"
-        android:textSize="15dp" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/videoNameId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="9.4"
+            android:layout_marginLeft="8dp"
+            android:layout_margin="3dp"
+            android:text="video Name Sample"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/deleteOfflineButtonId"
+            android:src="@drawable/btn_cancel"
+            android:scaleType="fitXY"
+            android:layout_weight="0.6"
+            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="18dp"/>
+    </LinearLayout>
 
     <!--<androidx.recyclerview.widget.RecyclerView
         android:id="@+id/innerRecycler"

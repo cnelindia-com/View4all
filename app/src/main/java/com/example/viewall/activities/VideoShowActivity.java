@@ -591,10 +591,10 @@ public class VideoShowActivity extends AppCompatActivity {
                     strCategoryId = response.body().getData().get(0).getCategoryId();
 
                     strVideoName = response.body().getData().get(0).getUrlVideo()
-                            .replace("http://dev.view4all.tv/content/", "");
+                            .replace("http://appdev.view4all.tv/content/", "");
 
                     strAddVideoNameToStore = response.body().getData().get(0).getAddUrlVideo()
-                            .replace("http://dev.view4all.tv/content/", "");
+                            .replace("http://appdev.view4all.tv/content/", "");
 
                     //Add video add name
                     strAddVideoNameUrl = response.body().getData().get(0).getAddUrlVideo();
@@ -836,7 +836,7 @@ public class VideoShowActivity extends AppCompatActivity {
                     String bannerUrl = "";
                     String tempStr = "";
                     for (int i = 0; i < bannerList.size(); i++) {
-                        tempStr = bannerList.get(i).getImageUrl().replace("http://dev.view4all.tv/content/", "");
+                        tempStr = bannerList.get(i).getImageUrl().replace("http://appdev.view4all.tv/content/", "");
                         /*bannerUrl = bannerUrl + ", " + tempStr;*/
                         //Calling watchadvert api, for send banner image url
                         callWatchAdvert(tempStr);
@@ -934,6 +934,6 @@ public class VideoShowActivity extends AppCompatActivity {
         super.onPause();
         //Saving the current page name in the prefrence
         SharePrefrancClass.getInstance(VideoShowActivity.this).savePref("fromActivity",
-                "http://dev.view4all.tv/watch/" + strVideoId + "/");
+                "http://appdev.view4all.tv/watch/" + strVideoId + "/");
     }
 }

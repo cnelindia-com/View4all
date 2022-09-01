@@ -206,7 +206,7 @@ public class SportsActivity extends AppCompatActivity {
                     String bannerUrl = "";
                     String tempStr = "";
                     for (int i = 0; i < bannerList.size(); i++) {
-                        tempStr = bannerList.get(i).getImageUrl().replace("http://dev.view4all.tv/content/", "");
+                        tempStr = bannerList.get(i).getImageUrl().replace("http://appdev.view4all.tv/content/", "");
                         /*bannerUrl = bannerUrl + ", " + tempStr;*/
                         //Calling channel1 api
                         callChannel1Api(tempStr);
@@ -281,10 +281,10 @@ public class SportsActivity extends AppCompatActivity {
         super.onPause();
         //Saving the current page name in the prefrence
         /*SharePrefrancClass.getInstance(SportsActivity.this).savePref("fromActivity",
-                "http://dev.view4all.tv/channel/770ac6a1-2cdc-4235-8058-74d618aaaf2f/");*/
+                "http://appdev.view4all.tv/channel/770ac6a1-2cdc-4235-8058-74d618aaaf2f/");*/
 
         SharePrefrancClass.getInstance(SportsActivity.this).savePref("fromActivity",
-                "http://dev.view4all.tv/channel/"+ listData.get(0).getChannelId() + "/");
+                "http://appdev.view4all.tv/channel/"+ listData.get(0).getChannelId() + "/");
     }
 
     private void callChannel(String channelId) {

@@ -365,6 +365,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("delete from " + TABLE_OFFLINE);
     }
 
+    //Code for delete particular video from offline table
+    public void removeVideo (String videoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DELETE FROM " + TABLE_VIDEOS + " WHERE " + "videoid" + "= '" + videoId + "'");
+    }
+
     //Method for check duplicate value in the table
     public boolean checkDuplicate(String TableName,String strBannerPath, String strBannerName) {
         SQLiteDatabase db = this.getWritableDatabase();

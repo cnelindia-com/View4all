@@ -121,6 +121,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     String bannerNameForDownload, bannerUrlForDownload;
 
+    List<TableBannerModel> internalBannerData;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -378,12 +380,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     imageSlider.setSliderAdapter(new HomeAddSliderAdapter(bannerList, HomeActivity.this));
                     imageSlider.startAutoCycle();
 
+                    //Code for get data from table banner, url of internal storage in mobile device
+                    internalBannerData = databaseHandler.getBannerData();
+
+                    for (int bann=0; bann<internalBannerData.size(); bann++) {
+                        //Code for delete the banner from internal storage
+                        File file = new File(internalBannerData.get(bann).getBannerUrl());
+                        boolean deleted = file.delete();
+                    }
+
 
                     //Code for hit api in for loop
                     String bannerUrl = "";
                     String tempStr = "";
                     for (int i = 0; i < bannerList.size()/*2*/; i++) {
-                        tempStr = bannerList.get(i).getImageUrl().replace("http://dev.view4all.tv/content/", "");
+                        tempStr = bannerList.get(i).getImageUrl().replace("http://appdev.view4all.tv/content/", "");
                         /*bannerUrl = bannerUrl + ", " + tempStr;*/
                         //Calling index1 api
                         callIndex1Api(tempStr);
@@ -453,7 +464,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         /*String bannerUrl = "";
         String tempStr = "";
         for (int i = 0; i < bannerList.size(); i++) {
-            tempStr = bannerList.get(i).getImageUrl().replace("http://dev.view4all.tv/content/", "");
+            tempStr = bannerList.get(i).getImageUrl().replace("http://appdev.view4all.tv/content/", "");
             bannerUrl = bannerUrl + ", " + tempStr;
         }
         Log.d("BANNERURL", bannerUrl);*/
@@ -636,6 +647,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void callBannerDownload(String bannerName, String bannerUrl) {
+
+        //Code for delete the banner from internal storage
+
+
         //Below code for create new folder in the download directory
         String folder_main = "AddBanners";
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
@@ -749,7 +764,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
         //Saving the current page name in the prefrence
         SharePrefrancClass.getInstance(HomeActivity.this).savePref("fromActivity",
-                "http://dev.view4all.tv/index");
+                "http://appdev.view4all.tv/index");
     }
 
 }

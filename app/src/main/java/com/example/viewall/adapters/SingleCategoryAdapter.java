@@ -119,10 +119,10 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
                 strChannelName = headerItem.getName();
 
                 strVideoName = dataItem.getUrlVideo()
-                        .replace("http://dev.view4all.tv/content/", "");
+                        .replace("http://appdev.view4all.tv/content/", "");
 
                 strAdVideoNameToStore = dataItem.getAddUrlVideo()
-                        .replace("http://dev.view4all.tv/content/", "");
+                        .replace("http://appdev.view4all.tv/content/", "");
 
                 //Call advert download method here
                 callDownloadAdvt();
