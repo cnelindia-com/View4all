@@ -5,6 +5,13 @@ public class AddVideoModel {
     int _id;
     String addvideoUrl;
     String addname;
+    String videoid;
+
+    public AddVideoModel(String addvideoUrl, String addname, String videoid) {
+        this.addvideoUrl = addvideoUrl;
+        this.addname = addname;
+        this.videoid = videoid;
+    }
 
     public AddVideoModel(String addvideoUrl, String addname) {
         this.addvideoUrl = addvideoUrl;
@@ -14,6 +21,13 @@ public class AddVideoModel {
     public AddVideoModel() {
     }
 
+    public String getVideoid() {
+        return videoid;
+    }
+
+    public void setVideoid(String videoid) {
+        this.videoid = videoid;
+    }
 
     public AddVideoModel(String addvideoUrl) {
         this.addvideoUrl = addvideoUrl;

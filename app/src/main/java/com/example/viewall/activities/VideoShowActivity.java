@@ -37,6 +37,7 @@ import com.example.viewall.models.advert.AdvertResponse;
 import com.example.viewall.models.bannerlist.BannerResponse;
 import com.example.viewall.models.databasemodels.AddVideoModel;
 import com.example.viewall.models.databasemodels.VideoModel;
+import com.example.viewall.models.others.StoredAddPathModel;
 import com.example.viewall.models.seenvideolist.DataItem;
 import com.example.viewall.models.seenvideolist.SeenVideoResponse;
 import com.example.viewall.models.singlevideo.SingleVideoResponse;
@@ -113,6 +114,8 @@ public class VideoShowActivity extends AppCompatActivity {
     ArrayList<com.example.viewall.models.bannerlist.DataItem> bannerList;
 
     RecyclerView categoryWatchedRec;
+
+    List<StoredAddPathModel> storedAddPathModelsListGet;
 
     int duration;
 
@@ -263,7 +266,7 @@ public class VideoShowActivity extends AppCompatActivity {
                 Toast.makeText(VideoShowActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                 //Code for save data in the database
                 /*databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload));*/
-                databaseHandler.addDataToAd(new AddVideoModel(fileToDownload, strAddVideoNameToStore));
+                databaseHandler.addDataToAd(new AddVideoModel(fileToDownload, strAddVideoNameToStore, strVideoId));
             }
         }, new Func<Error>() {
             @Override
@@ -602,6 +605,22 @@ public class VideoShowActivity extends AppCompatActivity {
                     strAddVideoId = response.body().getData().get(0).getId();
 
                     strVideoUrlForDownload = response.body().getData().get(0).getUrlVideo();
+
+                    storedAddPathModelsListGet = new ArrayList<>();
+                    //Code for delete record from database and from internal storage
+                    storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
+
+                    //Check if list is empty or not for handle crash
+                    if (storedAddPathModelsListGet.size() == 0) {
+                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(VideoShowActivity.this, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
+                        //Implement code for delete file from internal storage
+                        //Code for delete the video from internal storage
+                        File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
+                        boolean deleted = file.delete();
+                        Toast.makeText(VideoShowActivity.this, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
+                    }
 
                     //Call method for download advert
                     callDownloadAdvt();

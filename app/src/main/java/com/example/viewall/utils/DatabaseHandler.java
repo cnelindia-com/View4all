@@ -13,6 +13,7 @@ import com.example.viewall.models.databasemodels.BannerOfflineModel;
 import com.example.viewall.models.databasemodels.TableBannerModel;
 import com.example.viewall.models.databasemodels.TableOfflineModel;
 import com.example.viewall.models.databasemodels.VideoModel;
+import com.example.viewall.models.others.StoredAddPathModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "("
                 + "id" + " INTEGER PRIMARY KEY,"
                 + "adpath" + " TEXT,"
-                + "adname" + " TEXT"
+                + "adname" + " TEXT,"
+                + "videoid" + " TEXT"
                 + ")";
 
         String CREATE_TABLE_OFFLINE = "CREATE TABLE " + TABLE_OFFLINE +
@@ -155,7 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Code to add new data in the tablebanner table
-    public void addBannerData (TableBannerModel tableBannerModel) {
+    public void addBannerData(TableBannerModel tableBannerModel) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -200,6 +202,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("adpath", addVideoModel.getAddvideoUrl());
         values.put("adname", addVideoModel.getAddname());
+        values.put("videoid", addVideoModel.getVideoid());
 
 
         //Inserting Row
@@ -279,6 +282,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 addVideoModel.set_id(Integer.parseInt(cursor.getString(0)));
                 addVideoModel.setAddvideoUrl(cursor.getString(1));
                 addVideoModel.setAddname(cursor.getString(2));
+                addVideoModel.setVideoid(cursor.getString(3));
 
                 //Adding advideomodel to list
                 addVideoData.add(addVideoModel);
@@ -296,7 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 TableBannerModel tableBannerModel = new TableBannerModel();
                 tableBannerModel.set_id(Integer.parseInt(cursor.getString(0)));
@@ -314,9 +318,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public /*List<String>*/ void getCatData() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_VIDEOS, new String[] { KEY_ID,
-                        KEY_NAME }, KEY_ID + "=?",
-                new String[] { String.valueOf(KEY_ID) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_VIDEOS, new String[]{KEY_ID,
+                        KEY_NAME}, KEY_ID + "=?",
+                new String[]{String.valueOf(KEY_ID)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -327,20 +331,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String answer = "SELECT DISTINCT " + "catname" + " FROM " + TABLE_VIDEOS;
 
 
-
     }
 
     //Code for get the list of videos url and name
-    public List<VideoModel> getAllVideoData(){
+    public List<VideoModel> getAllVideoData() {
         List<VideoModel> videosData = new ArrayList<>();
 
         /*String selectQuery = "SELECT * FROM " + TABLE_VIDEOS + " OrderBy" + "catname" + "ASC ";*/
-        String selectQuery = "SELECT * FROM " + TABLE_VIDEOS + " ORDER " +  "BY " + "catname " + "ASC";
+        String selectQuery = "SELECT * FROM " + TABLE_VIDEOS + " ORDER " + "BY " + "catname " + "ASC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 VideoModel videoModel = new VideoModel();
                 videoModel.set_id(Integer.parseInt(cursor.getString(0)));
@@ -359,25 +362,63 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Code for remove the complete data from the tableoffline
-    public void removeTableData () {
+    public void removeTableData() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("delete from " + TABLE_OFFLINE);
     }
 
     //Code for delete particular video from offline table
-    public void removeVideo (String videoId) {
+    public void removeVideo(String videoId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DELETE FROM " + TABLE_VIDEOS + " WHERE " + "videoid" + "= '" + videoId + "'");
     }
 
-    //Method for check duplicate value in the table
-    public boolean checkDuplicate(String TableName,String strBannerPath, String strBannerName) {
+    //Method for delete video advt. from table
+    public List<StoredAddPathModel> removeAdvtVideo(String videoId) {
+        List<StoredAddPathModel> storedAddPathModelsList = new ArrayList<>();
+
+        String queryForAdvtPath = "SELECT " + "adpath" + " FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'";
+
         SQLiteDatabase db = this.getWritableDatabase();
-        String Query = "SELECT * FROM " +TABLE_BANNER+ " WHERE " + "bannerpath" + "=" + strBannerPath+ "," + "bannername" + "=" + strBannerName;
+        Cursor c = db.rawQuery(queryForAdvtPath, null);
+
+        if (c.moveToFirst()) {
+            do {
+                    StoredAddPathModel storedAddPathModel = new StoredAddPathModel();
+//                    storedAddPathModel.set_id(Integer.parseInt(c.getString(0)));
+                    storedAddPathModel.setAdPath(c.getString(0));
+//                    storedAddPathModel.setAdName(c.getString(2));
+//                    storedAddPathModel.setVideoId(c.getString(3));
+                    storedAddPathModelsList.add(storedAddPathModel);
+
+
+            } while (c.moveToNext());
+        }
+
+        //query for delete advt video row by video id
+        db.execSQL("DELETE FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'");
+
+        return storedAddPathModelsList;
+    }
+
+    //Code for get the advt according to video id
+    public void getAdvt(String videoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQueryNew = "SELECT * FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'";
+
+        db.execSQL("SELECT * FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'");
+
+    }
+
+    //Method for check duplicate value in the table
+    public boolean checkDuplicate(String TableName, String strBannerPath, String strBannerName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String Query = "SELECT * FROM " + TABLE_BANNER + " WHERE " + "bannerpath" + "=" + strBannerPath + "," + "bannername" + "=" + strBannerName;
         Cursor cursor = db.rawQuery(Query, null);
-        if(cursor.getCount() <= 0){
+        if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }

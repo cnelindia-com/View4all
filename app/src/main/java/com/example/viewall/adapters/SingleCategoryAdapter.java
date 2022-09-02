@@ -179,7 +179,7 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
                 /*Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show();*/
                 //Code for save data in the database
                 /*databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload));*/
-                databaseHandler.addDataToAd(new AddVideoModel(fileToDownload, strAdVideoNameToStore));
+                databaseHandler.addDataToAd(new AddVideoModel(fileToDownload, strAdVideoNameToStore, strVideoId));
 
 
                 //Call download method here
