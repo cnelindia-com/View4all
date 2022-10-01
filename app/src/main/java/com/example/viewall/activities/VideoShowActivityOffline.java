@@ -23,9 +23,11 @@ import android.widget.Toast;
 import com.example.viewall.R;
 import com.example.viewall.adapters.HomeAddSliderAdapter;
 import com.example.viewall.adapters.OfflineSliderAdapter;
+import com.example.viewall.models.databasemodels.AddVideoModel;
 import com.example.viewall.models.databasemodels.BannerOfflineModel;
 import com.example.viewall.models.databasemodels.TableBannerModel;
 import com.example.viewall.models.databasemodels.TableOfflineModel;
+import com.example.viewall.models.others.StoredAddPathModel;
 import com.example.viewall.utils.CustomVideoView;
 import com.example.viewall.utils.DatabaseHandler;
 import com.example.viewall.utils.ScalableVideoView;
@@ -33,6 +35,7 @@ import com.example.viewall.utils.SharePrefrancClass;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +50,9 @@ public class VideoShowActivityOffline extends AppCompatActivity {
     List<TableBannerModel> offlineBannerData;
     SliderView imageSlider;
     ImageView imgBack, toolbarImgId, icn_hamburger;
+
+    List<AddVideoModel> offLineAddData;
+    List<StoredAddPathModel> storedAddPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,9 @@ public class VideoShowActivityOffline extends AppCompatActivity {
         imageSlider = findViewById(R.id.imageSlider);
 
         databaseHandler = new DatabaseHandler(this);
+
+        //Call get data from ad video from addvideosurl table
+        offLineAddData = databaseHandler.getAllAdVideoData();
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,13 +116,18 @@ public class VideoShowActivityOffline extends AppCompatActivity {
         Intent intent = getIntent();
         strVideoUrlOff = intent.getStringExtra("videoUrlOffline");
         strVideoIdOff = intent.getStringExtra("videoIdOffline");
-        strAdVideoUrlOff = intent.getStringExtra("adVideoUrlOffline");
-        strAdVideoNameOff = intent.getStringExtra("adVideoNameOffline");
+        /*strAdVideoUrlOff = intent.getStringExtra("adVideoUrlOffline");
+        strAdVideoNameOff = intent.getStringExtra("adVideoNameOffline");*/
         strVideoTimeOff = intent.getStringExtra("videoTimeOffline");
         txtVideoName.setText(intent.getStringExtra("videoNameOffline"));
 
         //Call get data from the tablebanner
         offlineBannerData = databaseHandler.getBannerData();
+
+        //Below code for get advt video url from table using videoid of video
+        storedAddPath = new ArrayList<>();
+        storedAddPath = databaseHandler.getAdvtPath(intent.getStringExtra("videoIdOffline"));
+
 
         //Code for insert banner data into the table
         for (int i = 0; i < offlineBannerData.size(); i++) {
@@ -131,7 +145,7 @@ public class VideoShowActivityOffline extends AppCompatActivity {
                 + "\n" + intent.getStringExtra("videoUrlOffline"), Toast.LENGTH_SHORT).show();*/
 
         //Call here the method for run the video
-        runVideo(intent.getStringExtra("adVideoUrlOffline"),
+        runVideo(/*intent.getStringExtra("adVideoUrlOffline")*/ storedAddPath.get(0).getAdPath(),
                 intent.getStringExtra("videoUrlOffline"));
 
         //Code for set the slider to the adapter

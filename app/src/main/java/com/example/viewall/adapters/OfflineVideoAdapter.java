@@ -35,13 +35,19 @@ public class OfflineVideoAdapter extends RecyclerView.Adapter<OfflineVideoAdapte
     AlertDialog.Builder builder;
     DatabaseHandler databaseHandler;
 
-    public OfflineVideoAdapter(Context context, List<VideoModel> list, List<AddVideoModel> adList) {
+    public OfflineVideoAdapter(Context context, List<VideoModel> list) {
+        this.context = context;
+        this.list = list;
+        this.databaseHandler = new DatabaseHandler(context);
+    }
+
+    /*public OfflineVideoAdapter(Context context, List<VideoModel> list, List<AddVideoModel> adList) {
         this.context = context;
         this.list = list;
         this.adList = adList;
 
         databaseHandler = new DatabaseHandler(context);
-    }
+    }*/
 
     /*public OfflineVideoAdapter(Context context, List<VideoModel> list) {
         this.context = context;
@@ -59,7 +65,7 @@ public class OfflineVideoAdapter extends RecyclerView.Adapter<OfflineVideoAdapte
     @Override
     public void onBindViewHolder(@NonNull OfflineVideoAdapter.OfflineViewHolder holder, int position) {
         VideoModel videoModel = list.get(position);
-        AddVideoModel adVideoModel = adList.get(position);
+//        AddVideoModel adVideoModel = adList.get(position);
 
         if (position == 0) {
             holder.catNameTxtId.setVisibility(View.VISIBLE);
@@ -89,8 +95,8 @@ public class OfflineVideoAdapter extends RecyclerView.Adapter<OfflineVideoAdapte
                 intentOffline.putExtra("videoUrlOffline", videoModel.getVideoUrl());
                 intentOffline.putExtra("videoIdOffline", videoModel.getVideoId());
                 intentOffline.putExtra("videoTimeOffline", videoModel.getVideotime());
-                intentOffline.putExtra("adVideoUrlOffline", adVideoModel.getAddvideoUrl());
-                intentOffline.putExtra("adVideoNameOffline", adVideoModel.getAddname());
+                /*intentOffline.putExtra("adVideoUrlOffline", adVideoModel.getAddvideoUrl());
+                intentOffline.putExtra("adVideoNameOffline", adVideoModel.getAddname());*/
 
                 context.startActivity(intentOffline);
             }
@@ -115,7 +121,8 @@ public class OfflineVideoAdapter extends RecyclerView.Adapter<OfflineVideoAdapte
                         Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
 
                         Intent refreshIntent = new Intent(context, DownloanActivity.class);
-//                        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        /*refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+                        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         context.startActivity(refreshIntent);
 //                        notifyDataSetChanged();
 

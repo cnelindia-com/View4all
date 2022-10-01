@@ -244,6 +244,17 @@ public class VideoShowActivity extends AppCompatActivity {
 
     //Method for call download advt videos
     private void callDownloadAdvt() {
+
+        //Creating reference variable of fetch
+        Fetch fetchAdvt;
+
+        //Configuring fetch for advt.
+        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(VideoShowActivity.this)
+                .setDownloadConcurrentLimit(3)
+                .build();
+
+        fetchAdvt = Fetch.Impl.getInstance(fetchConfiguration);
+
         //Below code for create new folder in the download directory
         String folder_main = "AddVideos";
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
@@ -260,13 +271,103 @@ public class VideoShowActivity extends AppCompatActivity {
         request.setNetworkType(NetworkType.ALL);
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
 
-        fetch.enqueue(request, new Func<Request>() {
+        fetchAdvt.addListener(new FetchListener() {
+            @Override
+            public void onAdded(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onQueued(@NonNull Download download, boolean b) {
+
+            }
+
+            @Override
+            public void onWaitingNetwork(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onCompleted(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onError(@NonNull Download download, @NonNull Error error, @Nullable Throwable throwable) {
+                Toast.makeText(VideoShowActivity.this, "ADVT. ONERROR", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadBlockUpdated(@NonNull Download download, @NonNull DownloadBlock downloadBlock, int i) {
+
+            }
+
+            @Override
+            public void onStarted(@NonNull Download download, @NonNull List<? extends DownloadBlock> list, int i) {
+
+            }
+
+            @Override
+            public void onProgress(@NonNull Download download, long l, long l1) {
+
+            }
+
+            @Override
+            public void onPaused(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onResumed(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onRemoved(@NonNull Download download) {
+
+            }
+
+            @Override
+            public void onDeleted(@NonNull Download download) {
+
+            }
+        });
+
+        fetchAdvt.enqueue(request, new Func<Request>() {
             @Override
             public void call(@NonNull Request result) {
+                /*//Below code for test
+                storedAddPathModelsListGet = new ArrayList<>();
+                //Code for delete record from database and from internal storage
+                storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
+
+                //Check if list is empty or not for handle crash
+                if (storedAddPathModelsListGet.size() == 0) {
+//                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(VideoShowActivity.this, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
+                    //Implement code for delete file from internal storage
+                    //Code for delete the video from internal storage
+
+                    //Commenting code of delete from internal storage
+                    File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
+                    boolean deleted = file.delete();
+                    Toast.makeText(VideoShowActivity.this, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
+                }*/
+                //Remove the advt data from adurls table
+                databaseHandler.removeAdvtRow(strVideoId);
+
+
                 Toast.makeText(VideoShowActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                 //Code for save data in the database
                 /*databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload));*/
                 databaseHandler.addDataToAd(new AddVideoModel(fileToDownload, strAddVideoNameToStore, strVideoId));
+                Toast.makeText(VideoShowActivity.this, "ADVT. COMPLETED DOWNLOAD", Toast.LENGTH_SHORT).show();
             }
         }, new Func<Error>() {
             @Override
@@ -606,21 +707,7 @@ public class VideoShowActivity extends AppCompatActivity {
 
                     strVideoUrlForDownload = response.body().getData().get(0).getUrlVideo();
 
-                    storedAddPathModelsListGet = new ArrayList<>();
-                    //Code for delete record from database and from internal storage
-                    storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
 
-                    //Check if list is empty or not for handle crash
-                    if (storedAddPathModelsListGet.size() == 0) {
-                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(VideoShowActivity.this, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
-                        //Implement code for delete file from internal storage
-                        //Code for delete the video from internal storage
-                        File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
-                        boolean deleted = file.delete();
-                        Toast.makeText(VideoShowActivity.this, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
-                    }
 
                     //Call method for download advert
                     callDownloadAdvt();
@@ -877,6 +964,9 @@ public class VideoShowActivity extends AppCompatActivity {
     FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NonNull Download download) {
+            //Delete the same video entry row for remove duplicate entry
+            databaseHandler.removeVideo(strVideoId);
+
             //This method is called first time when download the file
             Toast.makeText(VideoShowActivity.this, "First download", Toast.LENGTH_SHORT).show();
             databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload, strVideoId,

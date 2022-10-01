@@ -8,7 +8,7 @@ public class Description{
 	private String image;
 
 	@SerializedName("item")
-	private Object item;
+	private String item;
 
 	@SerializedName("thumb")
 	private String thumb;
@@ -17,28 +17,28 @@ public class Description{
 	private String nid;
 
 	@SerializedName("show")
-	private Object show;
+	private String show;
 
 	@SerializedName("description")
-	private Object description;
+	private String description;
 
 	@SerializedName("pid")
-	private Object pid;
+	private String pid;
 
 	@SerializedName("type")
-	private Object type;
+	private String type;
 
 	@SerializedName("sorder")
-	private Object sorder;
+	private String sorder;
 
 	@SerializedName("name")
 	private String name;
 
 	@SerializedName("other5")
-	private Object other5;
+	private String other5;
 
 	@SerializedName("other4")
-	private Object other4;
+	private String other4;
 
 	@SerializedName("id")
 	private String id;
@@ -50,31 +50,31 @@ public class Description{
 	private String category;
 
 	@SerializedName("subcategory")
-	private Object subcategory;
+	private String subcategory;
 
 	@SerializedName("other1")
 	private String other1;
 
 	@SerializedName("device")
-	private Object device;
+	private String device;
 
 	@SerializedName("value")
 	private String value;
 
 	@SerializedName("other3")
-	private Object other3;
+	private String other3;
 
 	@SerializedName("other2")
-	private Object other2;
+	private String other2;
 
 	@SerializedName("info")
-	private Object info;
+	private String info;
 
 	public String getImage(){
 		return image;
 	}
 
-	public Object getItem(){
+	public String getItem(){
 		return item;
 	}
 
@@ -86,23 +86,23 @@ public class Description{
 		return nid;
 	}
 
-	public Object getShow(){
+	public String getShow(){
 		return show;
 	}
 
-	public Object getDescription(){
+	public String getDescription(){
 		return description;
 	}
 
-	public Object getPid(){
+	public String getPid(){
 		return pid;
 	}
 
-	public Object getType(){
+	public String getType(){
 		return type;
 	}
 
-	public Object getSorder(){
+	public String getSorder(){
 		return sorder;
 	}
 
@@ -110,11 +110,11 @@ public class Description{
 		return name;
 	}
 
-	public Object getOther5(){
+	public String getOther5(){
 		return other5;
 	}
 
-	public Object getOther4(){
+	public String getOther4(){
 		return other4;
 	}
 
@@ -130,7 +130,7 @@ public class Description{
 		return category;
 	}
 
-	public Object getSubcategory(){
+	public String getSubcategory(){
 		return subcategory;
 	}
 
@@ -138,7 +138,7 @@ public class Description{
 		return other1;
 	}
 
-	public Object getDevice(){
+	public String getDevice(){
 		return device;
 	}
 
@@ -146,15 +146,15 @@ public class Description{
 		return value;
 	}
 
-	public Object getOther3(){
+	public String getOther3(){
 		return other3;
 	}
 
-	public Object getOther2(){
+	public String getOther2(){
 		return other2;
 	}
 
-	public Object getInfo(){
+	public String getInfo(){
 		return info;
 	}
 }

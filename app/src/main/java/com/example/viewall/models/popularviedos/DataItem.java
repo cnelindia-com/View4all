@@ -4,23 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataItem{
 
-	@SerializedName("image_url")
-	private String imageUrl;
-
 	@SerializedName("description")
 	private Description description;
 
 	@SerializedName("active_date")
 	private String activeDate;
-
-	@SerializedName("modified_user_id")
-	private String modifiedUserId;
-
-	@SerializedName("assigned_user_id")
-	private String assignedUserId;
-
-	@SerializedName("created_by")
-	private String createdBy;
 
 	@SerializedName("url_video")
 	private String urlVideo;
@@ -31,29 +19,11 @@ public class DataItem{
 	@SerializedName("subcategory_id")
 	private String subcategoryId;
 
-	@SerializedName("deleted")
-	private String deleted;
-
-	@SerializedName("filename")
-	private String filename;
-
-	@SerializedName("file_ext")
-	private String fileExt;
-
 	@SerializedName("status_id")
 	private String statusId;
 
-	@SerializedName("account_id")
-	private String accountId;
-
-	@SerializedName("date_modified")
-	private String dateModified;
-
 	@SerializedName("category_id")
 	private String categoryId;
-
-	@SerializedName("name")
-	private String name;
 
 	@SerializedName("date_entered")
 	private String dateEntered;
@@ -64,21 +34,50 @@ public class DataItem{
 	@SerializedName("id")
 	private String id;
 
+	@SerializedName("slug")
+	private String slug;
+
+	@SerializedName("channel_name")
+	private String channelName;
+
+	@SerializedName("image_url")
+	private String imageUrl;
+
+	@SerializedName("modified_user_id")
+	private String modifiedUserId;
+
+	@SerializedName("assigned_user_id")
+	private String assignedUserId;
+
+	@SerializedName("created_by")
+	private String createdBy;
+
+	@SerializedName("deleted")
+	private String deleted;
+
+	@SerializedName("filename")
+	private String filename;
+
+	@SerializedName("file_ext")
+	private String fileExt;
+
+	@SerializedName("account_id")
+	private String accountId;
+
+	@SerializedName("date_modified")
+	private String dateModified;
+
+	@SerializedName("name")
+	private String name;
+
 	@SerializedName("file_mime_type")
 	private String fileMimeType;
 
 	@SerializedName("channel_id")
 	private String channelId;
 
-	@SerializedName("slug")
-	private String slug;
-
 	@SerializedName("status")
 	private String status;
-
-	public String getImageUrl(){
-		return imageUrl;
-	}
 
 	public Description getDescription(){
 		return description;
@@ -86,18 +85,6 @@ public class DataItem{
 
 	public String getActiveDate(){
 		return activeDate;
-	}
-
-	public String getModifiedUserId(){
-		return modifiedUserId;
-	}
-
-	public String getAssignedUserId(){
-		return assignedUserId;
-	}
-
-	public String getCreatedBy(){
-		return createdBy;
 	}
 
 	public String getUrlVideo(){
@@ -112,36 +99,12 @@ public class DataItem{
 		return subcategoryId;
 	}
 
-	public String getDeleted(){
-		return deleted;
-	}
-
-	public String getFilename(){
-		return filename;
-	}
-
-	public String getFileExt(){
-		return fileExt;
-	}
-
 	public String getStatusId(){
 		return statusId;
 	}
 
-	public String getAccountId(){
-		return accountId;
-	}
-
-	public String getDateModified(){
-		return dateModified;
-	}
-
 	public String getCategoryId(){
 		return categoryId;
-	}
-
-	public String getName(){
-		return name;
 	}
 
 	public String getDateEntered(){
@@ -156,16 +119,60 @@ public class DataItem{
 		return id;
 	}
 
+	public String getSlug(){
+		return slug;
+	}
+
+	public String getChannelName(){
+		return channelName;
+	}
+
+	public String getImageUrl(){
+		return imageUrl;
+	}
+
+	public String getModifiedUserId(){
+		return modifiedUserId;
+	}
+
+	public String getAssignedUserId(){
+		return assignedUserId;
+	}
+
+	public String getCreatedBy(){
+		return createdBy;
+	}
+
+	public String getDeleted(){
+		return deleted;
+	}
+
+	public String getFilename(){
+		return filename;
+	}
+
+	public String getFileExt(){
+		return fileExt;
+	}
+
+	public String getAccountId(){
+		return accountId;
+	}
+
+	public String getDateModified(){
+		return dateModified;
+	}
+
+	public String getName(){
+		return name;
+	}
+
 	public String getFileMimeType(){
 		return fileMimeType;
 	}
 
 	public String getChannelId(){
 		return channelId;
-	}
-
-	public String getSlug(){
-		return slug;
 	}
 
 	public String getStatus(){

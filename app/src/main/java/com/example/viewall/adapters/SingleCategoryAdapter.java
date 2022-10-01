@@ -20,6 +20,7 @@ import com.example.viewall.R;
 import com.example.viewall.activities.VideoShowActivity;
 import com.example.viewall.models.databasemodels.AddVideoModel;
 import com.example.viewall.models.databasemodels.VideoModel;
+import com.example.viewall.models.others.StoredAddPathModel;
 import com.example.viewall.models.singlecategorylist.DataItem;
 import com.example.viewall.models.singlecategorylist.HeaderItem;
 import com.example.viewall.utils.DatabaseHandler;
@@ -47,6 +48,8 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
     String fileToDownload;
     String strVideoUrlForDownload, strVideoName, strAdVideoUrlForDownload, strAdVideoNameToStore,
     strChannelName;
+
+    List<StoredAddPathModel> storedAddPathModelsListGet;
 
     DatabaseHandler databaseHandler;
 
@@ -110,6 +113,7 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
         holder.imageDownloadId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Toast.makeText(context, "Down Clicked", Toast.LENGTH_SHORT).show();*/
                 /*Toast.makeText(context, "VIDEO URL : " + dataItem.getUrlVideo(), Toast.LENGTH_SHORT).show();*/
                 strDbVideoName = dataItem.getDescription().getName();
                 strVideoId = dataItem.getId();
@@ -124,6 +128,77 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
                 strAdVideoNameToStore = dataItem.getAddUrlVideo()
                         .replace("http://appdev.view4all.tv/content/", "");
 
+                //Delete from internal storage
+                /*storedAddPathModelsListGet = new ArrayList<>();
+                //Code for delete record from database and from internal storage
+                storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
+
+                //Check if list is empty or not for handle crash
+                if (storedAddPathModelsListGet.size() == 0) {
+//                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
+                    //Implement code for delete file from internal storage
+                    //Code for delete the video from internal storage
+
+                    //Commenting code of delete from internal storage
+                    File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
+                    boolean deleted = file.delete();
+                    Toast.makeText(context, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
+                }
+
+                //Remove the advt data from adurls table
+                databaseHandler.removeAdvtRow(strVideoId);*/
+
+                //Call advert download method here
+                callDownloadAdvt();
+
+                //Call download method here
+                /*callDownload(dataItem.getDescription().getName(), dataItem.getId(),
+                        dataItem.getTime());*/
+            }
+        });
+
+        holder.txtDownloadId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Down Clicked", Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(context, "VIDEO URL : " + dataItem.getUrlVideo(), Toast.LENGTH_SHORT).show();*/
+                strDbVideoName = dataItem.getDescription().getName();
+                strVideoId = dataItem.getId();
+                strVideoTime = dataItem.getTime();
+                strVideoUrlForDownload = dataItem.getUrlVideo();
+                strAdVideoUrlForDownload = dataItem.getAddUrlVideo();
+                strChannelName = headerItem.getName();
+
+                strVideoName = dataItem.getUrlVideo()
+                        .replace("http://appdev.view4all.tv/content/", "");
+
+                strAdVideoNameToStore = dataItem.getAddUrlVideo()
+                        .replace("http://appdev.view4all.tv/content/", "");
+
+                //Delete from internal storage
+                /*storedAddPathModelsListGet = new ArrayList<>();
+                //Code for delete record from database and from internal storage
+                storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
+
+                //Check if list is empty or not for handle crash
+                if (storedAddPathModelsListGet.size() == 0) {
+//                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
+                    //Implement code for delete file from internal storage
+                    //Code for delete the video from internal storage
+
+                    //Commenting code of delete from internal storage
+                    File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
+                    boolean deleted = file.delete();
+                    Toast.makeText(context, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
+                }
+
+                //Remove the advt data from adurls table
+                databaseHandler.removeAdvtRow(strVideoId);*/
+
                 //Call advert download method here
                 callDownloadAdvt();
 
@@ -134,6 +209,8 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
         });
     }
 
+
+
     @Override
     public int getItemCount() {
         return list.size();
@@ -142,12 +219,13 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
     public class SingleCatHolder extends RecyclerView.ViewHolder {
 
         LinearLayout rootLayoutSingleId;
-        TextView videoNameId;
+        TextView videoNameId, txtDownloadId;
         ImageView imageShowId, imageDownloadId;
 
         public SingleCatHolder(@NonNull View itemView) {
             super(itemView);
 
+            txtDownloadId = itemView.findViewById(R.id.txtDownloadId);
             videoNameId = itemView.findViewById(R.id.videoNameId);
             imageShowId = itemView.findViewById(R.id.imageShowId);
             imageDownloadId = itemView.findViewById(R.id.imageDownloadId);
@@ -176,6 +254,27 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
         fetch.enqueue(request, new Func<Request>() {
             @Override
             public void call(@NonNull Request result) {
+                /*storedAddPathModelsListGet = new ArrayList<>();
+                //Code for delete record from database and from internal storage
+                storedAddPathModelsListGet = databaseHandler.removeAdvtVideo(strVideoId);
+
+                //Check if list is empty or not for handle crash
+                if (storedAddPathModelsListGet.size() == 0) {
+//                        Toast.makeText(VideoShowActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, storedAddPathModelsListGet.get(0).getAdPath(), Toast.LENGTH_SHORT).show();
+                    //Implement code for delete file from internal storage
+                    //Code for delete the video from internal storage
+
+                    //Commenting code of delete from internal storage
+                    File file = new File(storedAddPathModelsListGet.get(0).getAdPath());
+                    boolean deleted = file.delete();
+                    Toast.makeText(context, "Deleted successful Internally.", Toast.LENGTH_SHORT).show();
+                }*/
+
+                //Remove the advt data from adurls table
+                databaseHandler.removeAdvtRow(strVideoId);
+
                 /*Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show();*/
                 //Code for save data in the database
                 /*databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload));*/
@@ -229,6 +328,9 @@ public class SingleCategoryAdapter extends RecyclerView.Adapter<SingleCategoryAd
     FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NonNull Download download) {
+            //Delete the same video entry row for remove duplicate entry
+            databaseHandler.removeVideo(strVideoId);
+
             //This method is called first time when download the file
             Toast.makeText(context, "First download", Toast.LENGTH_SHORT).show();
             databaseHandler.addData(new VideoModel(strDbVideoName, fileToDownload, strVideoId,

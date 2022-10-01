@@ -50,15 +50,17 @@ public class DownloanActivity extends AppCompatActivity {
 
         downloadRec = findViewById(R.id.downloadRec);
 
-        databaseHandler.getCatData();
+//        databaseHandler.getCatData();
 
         listHeader = new ArrayList<String>();
         listChild = new HashMap<String, List<String>>();
 
 
         /*offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData);*/
-        offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData,
-                offLineAddData);
+        /*offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData,
+                offLineAddData);*/
+        offlineVideoAdapter = new OfflineVideoAdapter(DownloanActivity.this, offlineData);
+
         downloadRec.setLayoutManager(new LinearLayoutManager(DownloanActivity.this, RecyclerView.VERTICAL, false));
         downloadRec.setAdapter(offlineVideoAdapter);
 

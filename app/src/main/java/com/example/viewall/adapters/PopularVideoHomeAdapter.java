@@ -51,6 +51,10 @@ public class PopularVideoHomeAdapter extends RecyclerView.Adapter<PopularVideoHo
             public void onClick(View view) {
                 Intent intent = new Intent(context, VideoShowActivity.class);
                 intent.putExtra("storedVideoId", dataItem.getId());
+                //Below send category name to intent
+                intent.putExtra("storedChannelName", dataItem.getChannelName());
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

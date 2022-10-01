@@ -375,6 +375,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_VIDEOS + " WHERE " + "videoid" + "= '" + videoId + "'");
     }
 
+    //Code for delete particular advt. video from table
+    public void removeAdvtRow(String videoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DELETE FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'");
+    }
+
     //Method for delete video advt. from table
     public List<StoredAddPathModel> removeAdvtVideo(String videoId) {
         List<StoredAddPathModel> storedAddPathModelsList = new ArrayList<>();
@@ -399,6 +406,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         //query for delete advt video row by video id
         db.execSQL("DELETE FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'");
+
+        return storedAddPathModelsList;
+    }
+
+    //Method for get the advt path form advt table
+    public List<StoredAddPathModel> getAdvtPath(String videoId) {
+        List<StoredAddPathModel> storedAddPathModelsList = new ArrayList<>();
+
+        String queryForAdvtPath = "SELECT " + "adpath" + " FROM " + TABLE_VIDEOS_ADD + " WHERE " + "videoid" + "= '" + videoId + "'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery(queryForAdvtPath, null);
+
+        if (c.moveToFirst()) {
+            do {
+                StoredAddPathModel storedAddPathModel = new StoredAddPathModel();
+//                    storedAddPathModel.set_id(Integer.parseInt(c.getString(0)));
+                storedAddPathModel.setAdPath(c.getString(0));
+//                    storedAddPathModel.setAdName(c.getString(2));
+//                    storedAddPathModel.setVideoId(c.getString(3));
+                storedAddPathModelsList.add(storedAddPathModel);
+
+
+            } while (c.moveToNext());
+        }
 
         return storedAddPathModelsList;
     }
